@@ -1,0 +1,20 @@
+{
+  "name": "encryptedfileserver",
+  "version": "1.0.0",
+  "description": "Encrypted file server",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Justin Willis",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "delivery": "0.0.3",
+    "express": "^4.13.3",
+    "file-encryptor": "^0.1.0",
+    "multer": "^1.1.0",
+    "mv": "^2.1.1"
+  }
+}
