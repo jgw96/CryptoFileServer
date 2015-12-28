@@ -10,13 +10,16 @@ const fs = require("fs");
 const https = require("https");
 const Dropbox = require("dropbox");
 
+//dropbox client
 const client = new Dropbox.Client({
     key: "yw3hqixwbqu9azm",
     secret: "va2vzkxy6k0p2re"
 });
 
+//start an auth server
 client.authDriver(new Dropbox.AuthDriver.NodeServer(8191));
 
+//do authentication
 client.authenticate(function(error, client) {
   if (error) {
     console.log(error);
@@ -25,48 +28,6 @@ client.authenticate(function(error, client) {
       console.log("authenticated");
   }
 });
-
-//remove an unempty directory 
-const rmdirAsync = (path, callback) => {
-    fs.readdir(path, (err, files) => {
-        if (err) {
-            // Pass the error on to callback
-            callback(err, []);
-            return;
-        }
-        let wait = files.length,
-            count = 0,
-            folderDone = function (err) {
-                count++;
-                // If we cleaned out all the files, continue
-                if (count >= wait || err) {
-                    fs.rmdir(path, callback);
-                }
-            };
-        // Empty directory to bail early
-        if (!wait) {
-            folderDone();
-            return;
-        }
-		
-        // Remove one or more trailing slash to keep from doubling up
-        path = path.replace(/\/+$/, "");
-        files.forEach((file) => {
-            let curPath = path + "/" + file;
-            fs.lstat(curPath, (err, stats) => {
-                if (err) {
-                    callback(err, []);
-                    return;
-                }
-                if (stats.isDirectory()) {
-                    rmdirAsync(curPath, folderDone);
-                } else {
-                    fs.unlink(curPath, folderDone);
-                }
-            });
-        });
-    });
-};
 
 //key used for encryption
 const key = "e8QI,Mr$*Z]D//|Z?^36xh9MwZTh9k";
@@ -91,6 +52,7 @@ const upload = multer({ storage: storage })
 
 const app = express();
 
+//start up https server
 https.createServer({
     key: fs.readFileSync('key.pem'),
     cert: fs.readFileSync('cert.pem')
@@ -101,6 +63,8 @@ app.use(express.static('public'));
 
 //this route handles getting files uploaded, encrypting them and writing them to disk
 app.post('/', upload.single('upl'), (req, res) => {
+    
+    if (localStorage.getItem)
     
     //encrypt the file using the above key
     encryptor.encryptFile(req.file.path, req.file.originalname, key, options, (err) => {
@@ -122,3 +86,9 @@ app.post('/', upload.single('upl'), (req, res) => {
     });
 
 });
+
+app.post("/getKey", (req, res) => {
+    res.writeHead(200, {"Content-Type": "text/html"});
+    res.write(key);
+    res.end();
+})
