@@ -6,6 +6,8 @@ const multer = require('multer');
 const path = require("path");
 const crypto = require("crypto");
 const encryptor = require("file-encryptor");
+const fs = require("fs");
+const https = require("https");
 
 //key used for encryption
 const key = "e8QI,Mr$*Z]D//|Z?^36xh9MwZTh9k";
@@ -30,6 +32,11 @@ const upload = multer({ storage: storage })
 
 const app = express();
 
+https.createServer({
+      key: fs.readFileSync('key.pem'),
+      cert: fs.readFileSync('cert.pem')
+    }, app).listen(55555);
+
 //serve the frontend
 app.use(express.static('public'));
 
@@ -49,11 +56,4 @@ app.post('/', upload.single('upl'), (req, res) => {
 
     });
 
-});
-
-const server = app.listen(3000, () => {
-    let host = server.address().address;
-    let port = server.address().port;
-
-    console.log('Example app listening at http://%s:%s', host, port);
 });
