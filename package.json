@@ -12,8 +12,10 @@
   "dependencies": {
     "body-parser": "^1.14.2",
     "delivery": "0.0.3",
+    "dropbox": "^0.10.3",
     "express": "^4.13.3",
     "file-encryptor": "^0.1.0",
+    "mkdirp": "^0.5.1",
     "multer": "^1.1.0",
     "mv": "^2.1.1"
   }
