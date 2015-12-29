@@ -19,16 +19,6 @@ const client = new Dropbox.Client({
 //start an auth server
 client.authDriver(new Dropbox.AuthDriver.NodeServer(8191));
 
-//do authentication
-client.authenticate(function(error, client) {
-  if (error) {
-    console.log(error);
-  }
-  else {
-      console.log("authenticated");
-  }
-});
-
 //key used for encryption
 const key = "e8QI,Mr$*Z]D//|Z?^36xh9MwZTh9k";
 
@@ -39,7 +29,7 @@ const options = { algorithm: 'aes256' };
 const storage = multer.diskStorage({
     destination: './uploads/',
     filename: function (req, file, cb) {
-        crypto.pseudoRandomBytes(16, function (err, raw) {
+        crypto.pseudoRandomBytes(16, (err, raw) => {
             if (err) return cb(err)
 
             cb(null, raw.toString('hex') + path.extname(file.originalname))
@@ -63,32 +53,47 @@ app.use(express.static('public'));
 
 //this route handles getting files uploaded, encrypting them and writing them to disk
 app.post('/', upload.single('upl'), (req, res) => {
-    
-    if (localStorage.getItem)
-    
-    //encrypt the file using the above key
-    encryptor.encryptFile(req.file.path, req.file.originalname, key, options, (err) => {
-        if (err) {
-            console.log(err);
-        }
-        else {
-            client.writeFile(req.file.originalname, req.file.originalname, (error, stat) => {
-                if(error) {
-                    console.log(error);
-                }
-                else {
-                    console.log("file saved to dropbox");
-                }
-            })
-            console.log("encrypted");
-        }
 
-    });
+    
+    
+        //encrypt the file using the above key
+        encryptor.encryptFile(req.file.path, req.file.originalname, key, options, (err) => {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                client.writeFile(req.file.originalname, req.file.originalname, (error, stat) => {
+                    if (error) {
+                        console.log(error);
+                    }
+                    else {
+                        console.log("file saved to dropbox");
+                    }
+                })
+                console.log("encrypted");
+            }
+
+        });
+        
+        res.end();
 
 });
 
 app.post("/getKey", (req, res) => {
-    res.writeHead(200, {"Content-Type": "text/html"});
+    res.writeHead(200, { "Content-Type": "text/html" });
     res.write(key);
+    res.end();
+})
+
+app.post("/auth", (req, res) => {
+    client.authenticate( (error, client) => {
+        if (error) {
+            console.log(error);
+        }
+        else {
+            console.log("authenticated");
+        }
+    });
+    
     res.end();
 })
