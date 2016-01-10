@@ -10,7 +10,9 @@
   "author": "Justin Willis",
   "license": "ISC",
   "dependencies": {
+    "aes-gcm-stream": "^2.1.0",
     "body-parser": "^1.14.2",
+    "bootstrap": "^3.3.6",
     "delivery": "0.0.3",
     "dropbox": "^0.10.3",
     "express": "^4.13.3",

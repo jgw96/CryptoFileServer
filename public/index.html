@@ -1,23 +1,49 @@
 <html>
 
 <head>
+    <title>Encrypted Upload</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+    <style>
+        .btn-file {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-file input[type=file] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            background: white;
+            cursor: inherit;
+            display: block;
+        }
+    </style>
 
 </head>
 
-<body>
-    <form action="/" method="POST" enctype="multipart/form-data">
-        Select an file to upload:
-        <input type="file" name="upl">
-        <input type="submit" value="Upload file">
-    </form>
-    
-    <form action="/getKey" method="POST">
-        <input type="submit" value="Get Decrypting Key">
-    </form>
-    
-    <form action="/auth" method="POST">
-        <input type="submit" value="Login to DropBox">
-    </form>
+<body style="background-color: #2196F3;">
+    <h1 class="text-center" style="color:white; margin-top:15%; margin-bottom:5%;">Encrypted file upload</h1>
+    <div style="text-align:center;">
+        <div style= "margin:auto; width:20%;">
+            <form action="/" method="POST" enctype="multipart/form-data">
+                <span style="display:block;" class="btn btn-default btn-block btn-file">
+                    Browse
+                <input class="custom-file-input" type="file" name="upload">
+                </span>
+                <input class="btn btn-default btn-block" type="submit" value="Upload">
+            </form>
+        </div>
+    </div>
 </body>
 
 </html>
