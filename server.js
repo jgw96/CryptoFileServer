@@ -25,7 +25,6 @@ app.get('/', function (req, res) {
     res.send('hello world');
 });
 
-// accept one file where the name of the form field is named photho
 app.post('/', upload.single('upload'), function (req, res) {
     encryptor.encryptFile("uploads/" + req.file.filename, req.file.originalname, key, options, function (err) {
         if (err) {
