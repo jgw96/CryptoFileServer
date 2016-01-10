@@ -21,10 +21,6 @@ var upload = multer({ storage: storage });
 
 app.use(express.static('public'));
 
-app.get('/', function (req, res) {
-    res.send('hello world');
-});
-
 app.post('/', upload.single('upload'), function (req, res) {
     encryptor.encryptFile("uploads/" + req.file.filename, req.file.originalname, key, options, function (err) {
         if (err) {
