@@ -1,0 +1,9 @@
+<input type="file" id="fileInput" name="upload" (change)="selectFile($event)">
+
+<button type="button" id="uploadButton" class="btn btn-primary btn-block" (click)="upload()">Upload</button>
+
+<ul class="list-group">
+  <li *ngFor="let file of uploadedFiles" class="list-group-item">
+      {{file.fileName}}
+  </li>
+</ul>

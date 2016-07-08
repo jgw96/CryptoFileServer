@@ -1,28 +1,30 @@
-var express = require('express');
-var multer = require('multer');
-var fs = require("fs");
+const express = require('express');
+const multer = require('multer');
+const fs = require("fs");
+const path = require("path");
 
-var app = express();
+const app = express();
 
-var encryptor = require('file-encryptor');
-var key = 'My Super Secret Key';
-var options = { algorithm: 'aes256' };
+const encryptor = require('file-encryptor');
+const key = 'My Super Secret Key';
+const options = { algorithm: 'aes256' };
 
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
         cb(null, 'uploads');
     },
-    filename: function (req, file, cb) {
+    filename: (req, file, cb) => {
         cb(null, file.originalname);
     }
 });
 
-var upload = multer({ storage: storage });
+const upload = multer({ storage: storage });
 
 app.use(express.static('public'));
 
-app.post('/', upload.single('upload'), function (req, res) {
-    encryptor.encryptFile("uploads/" + req.file.filename, req.file.originalname, key, options, function (err) {
+app.post('/', upload.single('upload'), (req, res) => {
+    console.log("called");
+    encryptor.encryptFile("uploads/" + req.file.filename, req.file.originalname, key, options, (err) => {
         if (err) {
             console.log(err);
         }
@@ -34,5 +36,24 @@ app.post('/', upload.single('upload'), function (req, res) {
     });
 });
 
-app.listen(8081);
+app.post('/download', (req, res) => {
+    encryptor.decryptFile(req.body.filename, req.body.filename, key, (err) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.download(req.body.filename, req.body.filename, (err) => {
+                if (err) {
+                    // Handle error, but keep in mind the response may be partially-sent
+                    // so check res.headersSent
+                    console.log(err);
+                } else {
+                    // decrement a download credit, etc.
+                    console.log("file sent");
+                };
+            });
+        };
+    });
+});
+
+app.listen(8080);
 

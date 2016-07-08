@@ -1,0 +1,9 @@
+#uploadButton {
+    position: absolute;
+    bottom: 0px;
+    border-radius: 0;
+}
+
+#uploadButton:focus {
+    outline: none;
+}
